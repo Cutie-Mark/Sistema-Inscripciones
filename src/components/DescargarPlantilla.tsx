@@ -6,17 +6,18 @@ import { generarExcel } from "@/utils/excel";
 
 const DescargarPlantilla = ({ olimpiada }: { olimpiada: Olimpiada }) => {
     const [loadingExcel, setLoadingExcel] = useState(false);
+    const onClick = async () => {
+        setLoadingExcel(true);
+        await generarExcel(olimpiada.id, olimpiada.nombre);
+        setLoadingExcel(false);
+    };
     return (
         <>
             <Button
                 variant={"link"}
                 disabled={loadingExcel}
                 className=" mb-2  text-green-600 border-green-200 hover:text-green-500 transition-colors"
-                onClick={async () => {
-                    setLoadingExcel(true);
-                    await generarExcel(olimpiada.id, olimpiada.nombre);
-                    setLoadingExcel(false);
-                }}
+                onClick={async (e) => { e.preventDefault(); onClick(); }}
             >
                 {loadingExcel ? (
                     <div className="flex items-center gap-2">

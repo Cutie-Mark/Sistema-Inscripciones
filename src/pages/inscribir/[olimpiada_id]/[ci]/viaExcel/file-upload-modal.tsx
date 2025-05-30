@@ -76,7 +76,7 @@ export default function FileUploadModal({
         Map<string, CategoriaExtendida[]>
     >(new Map());
 
-    const { departamentos, provincias, colegios } = useUbicacion();
+    const { departamentos, provincias, colegios, fetchUbicaciones } = useUbicacion();
     const { getAreasCategoriasPorOlimpiada } = useCategorias();
 
     const navigate = useNavigate();
@@ -86,6 +86,7 @@ export default function FileUploadModal({
             setCargandoCategorias(true);
             const fetchData = async () => {
                 try {
+                    await fetchUbicaciones(); 
                     const areasMap = await getAreasCategoriasPorOlimpiada(Number(olimpiada.id));
                     setAreasCategorias(areasMap);
                 } catch (error) {
@@ -97,7 +98,7 @@ export default function FileUploadModal({
 
             fetchData();
         }
-    }, [loading, open, olimpiada.id, getAreasCategoriasPorOlimpiada]);
+    }, [loading, open, olimpiada.id, getAreasCategoriasPorOlimpiada, fetchUbicaciones]);
 
     const handleFilesChange = (newFiles: File[]) => {
         setFiles(newFiles);

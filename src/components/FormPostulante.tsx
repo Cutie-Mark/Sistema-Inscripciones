@@ -133,13 +133,14 @@ const FormPostulante = ({
 
     const { olimpiada_id } = useParams();
     const [loading, setLoading] = useState(false);
-    const { departamentos, provincias, colegios, loading: ubicacionesLoading } = useUbicacion();
+    const { departamentos, provincias, colegios, loading: ubicacionesLoading, fetchUbicaciones } = useUbicacion();
     const [categorias, setCategorias] = useState<Categoria[]>([]);
 
     useEffect(() => {
         const fetchOlimpiada = async () => {
             try {
                 const response = await fetch(API_URL + "/api/olimpiadas/" + olimpiada_id);
+                await fetchUbicaciones();
                 if (!response.ok) {
                     console.error("Error al obtener olimpiada");
                 } else {
@@ -152,7 +153,7 @@ const FormPostulante = ({
         };
 
         fetchOlimpiada();
-    }, [olimpiada_id]);
+    }, [olimpiada_id, fetchUbicaciones]);
 
     useEffect(() => {
         if (!selectedGrado || !olimpiada_id) return;

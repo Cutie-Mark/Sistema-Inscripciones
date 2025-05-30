@@ -749,7 +749,19 @@ const StepFormPostulante = ({
     const [loading, setLoading] = useState(false);
     const [postulante, setPostulante] = useState<PostulanteData>();
     const [cambios, setCambios] = useState<Cambio[]>([]);
-    const { departamentos, provincias, colegios } = useUbicacion();
+    const { departamentos, provincias, colegios, fetchUbicaciones } = useUbicacion();
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                await fetchUbicaciones(); 
+            } catch (error) {
+                console.error("Error al cargar datos de ubicación:", error);
+            }
+        };
+        fetchData();
+    }, [fetchUbicaciones]);
+
     const next = (
         stepData:
             | PersonalData
