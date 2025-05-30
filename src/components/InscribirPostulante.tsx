@@ -154,16 +154,13 @@ const InscribirPostulante = ({ olimpiada }: { olimpiada?: Olimpiada }) => {
                             </TableHeader>
                             <TableBody className="">
                                 {listas.map(
-                                    (
-                                        {
-                                            codigo_lista,
-                                            postulantes_count,
-                                            created_at,
-                                        },
-                                        i
-                                    ) => (
+                                    ({
+                                        codigo_lista,
+                                        postulantes_count,
+                                        created_at,
+                                    }) => (
                                         <TableRow
-                                            key={i}
+                                            key={codigo_lista}
                                             className="hover:bg-primary/80 hover:cursor-pointer hover:text-primary-foreground"
                                             onClick={() => {
                                                 navigate(codigo_lista);

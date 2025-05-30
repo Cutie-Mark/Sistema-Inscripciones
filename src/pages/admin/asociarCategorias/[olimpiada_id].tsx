@@ -165,7 +165,7 @@ export default function Page() {
                     <TableCell>{area.nombre}</TableCell>
                     <TableCell className="flex flex-wrap w-xl gap-1">
                       {area.categorias?.map((cat) => (
-                        <Badge className=" rounded-xl" variant={"secondary"}>
+                        <Badge key={cat.id} className=" rounded-xl" variant={"secondary"}>
                           {cat.nombre}
                         </Badge>
                       ))}

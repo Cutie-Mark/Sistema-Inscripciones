@@ -144,7 +144,13 @@ const PersonalStep = ({
     const [postulante, setPostulante] = useState<PostulanteData>();
     const form = useForm<PersonalData>({
         resolver: zodResolver(personalSchema),
-        defaultValues: initialData,
+        defaultValues: {
+            nombres: initialData?.nombres || "",
+            apellidos: initialData?.apellidos || "",
+            ci: initialData?.ci || "",
+            fecha_nacimiento: initialData?.fecha_nacimiento || new Date(),
+            correo_postulante: initialData?.correo_postulante || ""
+        },
         mode: "onSubmit",
     });
     const [fieldsDisabled, setFieldsDisabled] = useState(
@@ -423,7 +429,12 @@ const ContactoStep = ({
 }) => {
     const form = useForm<ContactoData>({
         resolver: zodResolver(contactoSchema),
-        defaultValues: initialData,
+        defaultValues: {
+            telefono_contacto: initialData?.telefono_contacto || "",
+            tipo_contacto_telefono: initialData?.tipo_contacto_telefono || "",
+            email_contacto: initialData?.email_contacto || "",
+            tipo_contacto_email: initialData?.tipo_contacto_email || ""
+        },
         mode: "onSubmit",
     });
     const contactos = [

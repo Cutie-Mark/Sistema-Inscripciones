@@ -89,7 +89,7 @@ export default function Page() {
                                 </TableHeader>
                                 <TableBody>
                                     {data.map((inscripcion) => (
-                                        <TableRow key={inscripcion.id}>
+                                        <TableRow key={`${inscripcion.area}+${inscripcion.categoria}`+inscripcion.id}>
                                             <TableCell>
                                                 {inscripcion.nombres}
                                             </TableCell>
