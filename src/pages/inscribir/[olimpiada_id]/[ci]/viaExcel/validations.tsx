@@ -31,9 +31,14 @@ export const validarCamposRequeridos = (headers: string[]): {campo: string, colu
         { columna: "M", nombre: "Correo pertenece a" },
         { columna: "N", nombre: "Área categoría 1" },
     ];
-
-    const camposFaltantes = camposRequeridos.filter((campo) => {
-        const indice = headers.findIndex((h) => h.normalize().toLocaleLowerCase().trim() === campo.nombre.normalize().toLocaleLowerCase().trim());
+    const camposFaltantes = camposRequeridos.filter((campo, i) => {
+        const indice = headers.findIndex((h) => {
+            console.log(h.normalize().toLocaleLowerCase().trim(), campo.nombre.normalize().toLocaleLowerCase().trim())
+            return h.normalize().toLocaleLowerCase().trim() === campo.nombre.normalize().toLocaleLowerCase().trim()
+        });
+        if (i === 3) {
+            return indice === 3;
+        }
         return indice === -1;
     });
 

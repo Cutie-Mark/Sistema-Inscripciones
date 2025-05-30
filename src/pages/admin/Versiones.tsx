@@ -282,76 +282,76 @@ export function Versiones({
                             </CardFooter>
                         </Card>
                     ) : (
-                        <Link
+                    <Link
                             to={event.id.toString()}
-                            key={event.id}
-                            onClick={(e) => {
-                                if (onVersionCardClick) {
-                                    e.preventDefault();
-                                    onVersionCardClick(
-                                        event.id.toString(),
-                                        event.nombre
-                                    );
-                                }
-                            }}
-                        >
-                            <Card
+                        key={event.id}
+                        onClick={(e) => {
+                            if (onVersionCardClick) {
+                                e.preventDefault();
+                                onVersionCardClick(
+                                    event.id.toString(),
+                                    event.nombre
+                                );
+                            }
+                        }}
+                    >
+                        <Card
                                 className="h-full border-2 transition-all duration-200 ease-in-out transform hover:scale-105 hover:text-primary hover:border-primary"
-                            >
-                                <CardHeader className="flex justify-between items-center">
+                        >
+                            <CardHeader className="flex justify-between items-center">
                                     <CardTitle className="text-xl truncate" title={event.nombre}>
-                                        {event.nombre}
-                                    </CardTitle>
-                                    <Badge
-                                        variant="outline"
-                                        className="ml-2 whitespace-nowrap"
-                                    >
-                                        {event.gestion}
-                                    </Badge>
-                                </CardHeader>
+                                    {event.nombre}
+                                </CardTitle>
+                                <Badge
+                                    variant="outline"
+                                    className="ml-2 whitespace-nowrap"
+                                >
+                                    {event.gestion}
+                                </Badge>
+                            </CardHeader>
                                 <CardContent>
-                                    <div className="flex justify-between">
-                                        <div className="flex items-center gap-2 text-sm">
-                                            <CalendarDays className="h-4 w-4 text-muted-foreground" />
-                                            <div>
+                                        <div className="flex justify-between">
+                                            <div className="flex items-center gap-2 text-sm">
+                                                <CalendarDays className="h-4 w-4 text-muted-foreground" />
+                                                <div>
                                                 <p className="font-medium">
-                                                    Fecha de inicio:
-                                                </p>
+                                                        Fecha de inicio:
+                                                    </p>
                                                 <p className="text-muted-foreground">
-                                                    {formatDate(
-                                                        event.fecha_inicio
-                                                    )}
-                                                </p>
+                                                        {formatDate(
+                                                            event.fecha_inicio
+                                                        )}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div className="flex items-center gap-2 text-sm">
+                                                <CalendarDays className="h-4 w-4 text-muted-foreground" />
+                                                <div>
+                                                    <p className="font-medium">
+                                                        Fecha de fin:
+                                                    </p>
+                                                    <p className="text-muted-foreground">
+                                                        {formatDate(
+                                                            event.fecha_fin
+                                                        )}
+                                                    </p>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div className="flex items-center gap-2 text-sm">
-                                            <CalendarDays className="h-4 w-4 text-muted-foreground" />
-                                            <div>
-                                                <p className="font-medium">
-                                                    Fecha de fin:
-                                                </p>
-                                                <p className="text-muted-foreground">
-                                                    {formatDate(
-                                                        event.fecha_fin
-                                                    )}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </CardContent>
-                                <CardFooter className="flex items-center gap-2 text-sm text-muted-foreground border-t pt-4">
-                                    <Clock className="h-4 w-4" />
-                                    <span>
-                                        Duración:{" "}
-                                        {calculateDurationDisplay(
-                                            event.fecha_inicio,
-                                            event.fecha_fin
-                                        )}{" "}
-                                        días
-                                    </span>
-                                </CardFooter>
-                            </Card>
-                        </Link>
+                            </CardContent>
+                            <CardFooter className="flex items-center gap-2 text-sm text-muted-foreground border-t pt-4">
+                                <Clock className="h-4 w-4" />
+                                <span>
+                                    Duración:{" "}
+                                    {calculateDurationDisplay(
+                                        event.fecha_inicio,
+                                        event.fecha_fin
+                                    )}{" "}
+                                    días
+                                </span>
+                            </CardFooter>
+                        </Card>
+                    </Link>
                     )
                 ))}
             </div>
