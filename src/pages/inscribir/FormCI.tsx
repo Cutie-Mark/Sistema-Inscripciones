@@ -24,7 +24,12 @@ const formSchema = z.object({
 
 const FormCI = () => {
     const { olimpiada_id } = useParams();
-    const form = useForm({ resolver: zodResolver(formSchema) });
+    const form = useForm({
+        resolver: zodResolver(formSchema),
+        defaultValues: {
+            ci: ""
+        }
+    });
     const navigate = useNavigate();
 
     const onSubmit = ({ ci }: z.infer<typeof formSchema>) => {
