@@ -24,7 +24,7 @@ import { login } from "@/api/login";
 import { useState } from "react";
 import { AlertComponent } from "@/components/AlertComponent";
 import { useAuth } from "@/hooks/auth";
-
+import Loading from "@/components/Loading";
 //import { useAuth } from "@/hooks/Auth";
 
 const loginSchema = z.object({
@@ -42,20 +42,23 @@ const PageLogin = () => {
     });
     const [error, setError] = useState<string | null>(null);
     const {logIn}= useAuth()
-    
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
 
     async function onSubmit(values: z.infer<typeof loginSchema>) {
+        setLoading(true);
         try {
-            const data=await login(values);
-            logIn(data)
-            
+            const data = await login(values);
+            logIn(data);
             navigate("/admin");
         } catch (e: unknown) {
             setError(e instanceof Error ? e.message : "Error Desconocido");
+        } finally {
+            setLoading(false);
         }
     }
+    if (loading) return <Loading />;
     return (
         <>
             <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">

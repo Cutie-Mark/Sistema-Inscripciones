@@ -14,7 +14,8 @@ import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { z } from "zod";
 import { UserIcon } from "lucide-react";
-
+import Loading from "@/components/Loading";
+import { useState } from "react";
 const formSchema = z.object({
     ci: z
         .string()
@@ -30,12 +31,16 @@ const FormCI = () => {
             ci: ""
         }
     });
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
     const onSubmit = ({ ci }: z.infer<typeof formSchema>) => {
         sessionStorage.setItem("ci", ci);
+        setLoading(true);
         navigate("/inscribir/" + olimpiada_id + "/" + ci);
     };
+
+    if (loading) return <Loading />;
 
     return (
         <Card className="w-full max-w-md shadow-lg rounded-2xl">

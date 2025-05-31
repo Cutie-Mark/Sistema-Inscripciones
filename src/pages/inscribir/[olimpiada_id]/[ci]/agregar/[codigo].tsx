@@ -71,6 +71,7 @@ export default function Page() {
         try {
             await cambiarEstadoLista(codigo, "Pago Pendiente");
             navigate(`/inscribir/${olimpiada_id}/${ci}`);
+            setLoading(true);
         } catch (error) {
             if (error instanceof Error) {
                 toast.error(error.message);

@@ -28,7 +28,7 @@ import {
 } from 'tesseract.js';//opencv no tiene soporte en ts brous
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type CvMat = any;
-
+import Loading from "@/components/Loading";
 interface ProcessedImageData {
   id: string;
   name: string;
@@ -64,7 +64,7 @@ const SubirComprobantePage = () => {
   const [selectedResultId, setSelectedResultId] = useState<string | null>(null);
   const navigate = useNavigate();
   const { codigo } = useParams();
-
+  const [loading, setLoading] = useState(false);
   const inputCanvasRef = useRef<HTMLCanvasElement>(null);
   const outputCanvasRef1 = useRef<HTMLCanvasElement>(null);
   const outputCanvasRef2 = useRef<HTMLCanvasElement>(null);
@@ -127,6 +127,7 @@ const SubirComprobantePage = () => {
         toast.error("Ha ocurrido un error inesperado");
       }
       navigate(`..\\..\\`);
+      setLoading(true);
     }
   };
 
@@ -611,6 +612,7 @@ const toDigits7 = (raw: string) =>
     }
   }, [selectedResultId]);
 
+  if (loading) return <Loading />;
   return (
     <>
       <ReturnComponent />
