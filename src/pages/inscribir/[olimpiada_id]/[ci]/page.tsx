@@ -9,8 +9,7 @@ import Footer from "@/components/Footer";
 import ButtonsGrid from "@/components/ButtonsGrid";
 import { ButtonConfig } from "@/interfaces/buttons.interface";
 import {  Receipt, List, CheckCircle } from "lucide-react";
-import { apiClient } from "@/api/request";
-import { Olimpiada } from "@/types/versiones.type";
+import { useOlimpiada } from "@/hooks/getCacheResponsable/useOlimpiadas";
 import InscribirPostulante from "../../../../components/InscribirPostulante";
 import ShareUrl from "../../ShareUrl";
 import OlimpiadaNoEnCurso from "@/components/OlimpiadaNoEnCurso";
@@ -19,8 +18,8 @@ import InscribirExcel from "@/components/InscribirExcel";
 const Page = () => {
     const [openFormResponsable, setOpenFormResponsable] = useState(false);
     const [loading, setLoading] = useState(true);
-    const [olimpiada, setOlimpiada] = useState<Olimpiada>();
     const { ci, olimpiada_id } = useParams();
+    const { data: olimpiada, isLoading: olimpiadaLoading, isError: olimpiadaError } = useOlimpiada(Number(olimpiada_id));
     const buttons: ButtonConfig[] = [
         // {
         //     label: "Inscribir por Excel",
@@ -46,23 +45,20 @@ const Page = () => {
             color: "slate",
         },
     ];
-    const getOlimpiada = async () => {
-        const olimpiada = await apiClient.get<Olimpiada>(
-            "/api/olimpiadas/" + olimpiada_id
-        );
-        setOlimpiada(olimpiada);
-    };
     useEffect(() => {
         if (!ci || ci.length < 7 || ci.length > 10) return;
         fetchData();
-        getOlimpiada();
-    }, []);
+    }, [ci]);
+
+    useEffect(() => {
+        if (olimpiadaError) {
+            console.error("Error al obtener olimpiada");
+        }
+    }, [olimpiadaError]);
 
     if (!ci || ci.length < 7 || ci.length > 10) {
         return <NotFoundPage />;
     }
-    if (!olimpiada_id) return;
-
     const refresh = async () => {
         setLoading(true);
         try {
@@ -82,6 +78,8 @@ const Page = () => {
             console.error("Error al obtener las inscripciones de postulantes");
         }
     };
+
+    if (!olimpiada_id || olimpiadaLoading) return <Loading />;
 
     if (loading) return <Loading />;
     if (openFormResponsable)
