@@ -1,15 +1,7 @@
 "use client";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { useState, useEffect } from "react";
-import { FileSpreadsheet, Loader2, ArrowLeft } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { FileSpreadsheet, Loader2 } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -31,8 +23,6 @@ import { ValidationError, ErroresDeFormato } from "@/models/interfaces/errores";
 import { ErrorCheckboxRow } from "@/components/ErrorCheckboxRow";
 import axios, { AxiosError } from "axios";
 import { toast } from "sonner";
-import { HoverCard, HoverCardTrigger } from "@radix-ui/react-hover-card";
-import { HoverCardContent } from "@/components/ui/hoverCard";
 import LoadingAlert from "@/components/loading-alert";
 import { useParams } from "react-router-dom";
 import { Olimpiada } from "@/models/interfaces/versiones";
@@ -40,155 +30,14 @@ import { ExcelParser } from "@/lib/ExcelParser";
 import { useNavigate } from "react-router-dom";
 import { useUbicacion } from "@/viewModels/context/UbicacionContext";
 import { useCategorias } from "@/viewModels/context/CategoriasContext";
-import FileUpload from "../../../../../components/fileUpload";
 import { newValidarFila } from "@/viewModels/usarVistaModelo/inscribir/excel/validations";
 import { lazy, Suspense } from 'react';
+import StepIndicator from "@/components/StepIndicator";
 
 const DescargarPlantilla = lazy(() => import("../../../../../components/DescargarPlantilla"));
 
-interface StepIndicatorProps {
-  currentStep: number;
-  steps: string[];
-}
-
-const StepIndicator = ({ currentStep, steps }: StepIndicatorProps) => {
-  return (
-    <nav className="flex flex-wrap space-x-2 mx-auto justify-between space-y-2 gap-3 mb-5">
-      {steps.map((label: string, i: number) => (
-        <div key={i} className="flex m-0 items-center ">
-          <div
-            className={cn(
-              "flex items-center justify-center w-8 h-8 rounded-full border-3 m-0 font-bold",
-              i + 1 === currentStep
-                ? "border-primary bg-primary text-primary-foreground "
-                : "border-foreground"
-            )}
-          >
-            {i + 1}
-          </div>
-          <span
-            className={cn("ml-2 ", i + 1 === currentStep ? "text-primary font-bold" : "")}
-          >
-            {label}
-          </span>
-        </div>
-      ))}
-    </nav>
-  );
-};
-
-const StepOne = ({ files, maxFiles, maxSize, accept, onFilesChange, filesRefresh, handleCancel, newHandleProcesar }: {
-  files: File[];
-  maxFiles: number;
-  maxSize: number;
-  accept: string;
-  onFilesChange: (files: File[]) => void;
-  filesRefresh: File[];
-  handleCancel: () => void;
-  newHandleProcesar: () => Promise<void>;
-}) => {
-  return (
-    <>
-      <FileUpload
-        key={files[0]?.name}
-        maxFiles={maxFiles}
-        maxSize={maxSize}
-        accept={accept}
-        onFilesChange={onFilesChange}
-        filesRefresh={filesRefresh}
-      />
-      <DialogFooter className="flex flex-col sm:flex-row gap-2">
-        <Button variant="outline" onClick={() => handleCancel()}>
-          Cancelar
-        </Button>
-        <HoverCard>
-          <HoverCardTrigger asChild>
-            <Button
-              disabled={files.length === 0 || files.length > maxFiles}
-              onClick={newHandleProcesar}
-            >
-              Procesar
-            </Button>
-          </HoverCardTrigger>
-          <HoverCardContent className=" p-2">
-            <p className="text-sm text-zinc-500">
-              No se ha seleccionado ningun archivo
-            </p>
-          </HoverCardContent>
-        </HoverCard>
-      </DialogFooter>
-    </>
-  );
-};
-
-const StepTwo = ({ postulantesExtraidos, inscribirPostulantes, onBack }: {
-  postulantesExtraidos: newPostulante[];
-  inscribirPostulantes: (postulantes: newPostulante[]) => Promise<void>;
-  onBack: () => void;
-}) => {
-  return (
-    <>
-      {postulantesExtraidos.length > 0 && (
-        <div className="max-h-4/6 h-4/6">
-          <div className="mb-4">
-            <p className="text-sm text-muted-foreground mb-2">
-              Se encontraron {postulantesExtraidos.length} postulantes.
-            </p>
-          </div>
-          {/* Después: envolvemos la tabla en un div que controla el scroll */}
-          <div className="overflow-auto border max-h-[60vh]">
-            <Table className="">
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Nombres</TableHead>
-                  <TableHead>Apellidos</TableHead>
-                  <TableHead>CI</TableHead>
-                  <TableHead>Area</TableHead>
-                  <TableHead>Categoria</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {postulantesExtraidos.map((inscripcion) =>
-                  inscripcion.nombresAreas.map((area, index) => (
-                    <TableRow key={inscripcion.ci + index}>
-                      <TableCell>{inscripcion.nombres}</TableCell>
-                      <TableCell>{inscripcion.apellidos}</TableCell>
-                      <TableCell>{inscripcion.ci}</TableCell>
-                      <TableCell>{area}</TableCell>
-                      <TableCell>{inscripcion.nombresCategorias[index]}</TableCell>
-                    </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
-          </div>
-
-          <DialogFooter className="flex flex-col sm:flex-row gap-2 mt-4">
-            <Button variant="outline" onClick={onBack}>
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Regresar
-            </Button>
-            <HoverCard>
-              <HoverCardTrigger asChild>
-                <Button
-                  onClick={() => inscribirPostulantes(postulantesExtraidos)}
-                >
-                  Inscribir Postulantes
-                </Button>
-              </HoverCardTrigger>
-              <HoverCardContent className=" p-2">
-                <p className="text-sm text-zinc-500">
-                  No se ha seleccionado ningun archivo
-                </p>
-              </HoverCardContent>
-            </HoverCard>
-          </DialogFooter>
-        </div>
-      )}
-    </>
-  );
-};
-
+import StepOne from "./pasoUno";
+import StepTwo from "./pasoDos";
 interface FileUploadModalProps {
   maxFiles?: number;
   maxSize?: number;
@@ -473,12 +322,12 @@ export const IncribirExcel = ({
             </p>
           </Button>
         </DialogTrigger>
-        <DialogContent className="max-h-[94vh] sm:max-w-[500px] md:max-w-[600px]">
+        <DialogContent className={`max-h-[94vh] ${currentStep==1?"sm:max-w-[500px] md:max-w-[600px]":"sm:max-w-[95px] md:max-w-[1200px]"}`}>
           <DialogHeader>
             <DialogTitle className="text-xl font-semibold mb-2">
               {title}
             </DialogTitle>
-            <StepIndicator currentStep={currentStep} steps={["Subir Archivo", "Revisar Datos"]} />
+            <StepIndicator currentStep={currentStep-1} steps={["Subir Archivo", "Revisar Datos"]} />
           </DialogHeader>
           <div className="">
             {cargandoCategorias && (

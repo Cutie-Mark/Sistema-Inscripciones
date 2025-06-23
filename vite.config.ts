@@ -22,7 +22,6 @@ export default defineConfig({
         },
     },
     build: {
-        target: ['chrome90', 'firefox88', 'edge90', 'safari15'],
         sourcemap: false,
 
         rollupOptions: {

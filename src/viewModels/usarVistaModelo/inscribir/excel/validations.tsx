@@ -475,8 +475,14 @@ export const newValidarFila = (
     idColegio: 0,
     idCurso: 0,
     inscripciones: [],
+
     nombresAreas: [],
     nombresCategorias: [],
+    departamento: fila.departamento,
+    provincia: fila.provincia,
+    colegio: fila.colegio,
+    curso: fila.grado,
+
   };
 
   ["telefono_pertenece_a", "correo_pertenece_a"].forEach((campo) => {
