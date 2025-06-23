@@ -1,7 +1,15 @@
 "use client";
-
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { useState, useEffect } from "react";
-import { FileSpreadsheet, Loader2 } from "lucide-react";
+import { FileSpreadsheet, Loader2, ArrowLeft } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -32,11 +40,154 @@ import { ExcelParser } from "@/lib/ExcelParser";
 import { useNavigate } from "react-router-dom";
 import { useUbicacion } from "@/viewModels/context/UbicacionContext";
 import { useCategorias } from "@/viewModels/context/CategoriasContext";
-import FileUpload from "./fileUpload";
+import FileUpload from "../../../../../components/fileUpload";
 import { newValidarFila } from "@/viewModels/usarVistaModelo/inscribir/excel/validations";
 import { lazy, Suspense } from 'react';
 
-const DescargarPlantilla = lazy(() => import("./DescargarPlantilla"));
+const DescargarPlantilla = lazy(() => import("../../../../../components/DescargarPlantilla"));
+
+interface StepIndicatorProps {
+  currentStep: number;
+  steps: string[];
+}
+
+const StepIndicator = ({ currentStep, steps }: StepIndicatorProps) => {
+  return (
+    <nav className="flex flex-wrap space-x-2 mx-auto justify-between space-y-2 gap-3 mb-5">
+      {steps.map((label: string, i: number) => (
+        <div key={i} className="flex m-0 items-center ">
+          <div
+            className={cn(
+              "flex items-center justify-center w-8 h-8 rounded-full border-3 m-0 font-bold",
+              i + 1 === currentStep
+                ? "border-primary bg-primary text-primary-foreground "
+                : "border-foreground"
+            )}
+          >
+            {i + 1}
+          </div>
+          <span
+            className={cn("ml-2 ", i + 1 === currentStep ? "text-primary font-bold" : "")}
+          >
+            {label}
+          </span>
+        </div>
+      ))}
+    </nav>
+  );
+};
+
+const StepOne = ({ files, maxFiles, maxSize, accept, onFilesChange, filesRefresh, handleCancel, newHandleProcesar }: {
+  files: File[];
+  maxFiles: number;
+  maxSize: number;
+  accept: string;
+  onFilesChange: (files: File[]) => void;
+  filesRefresh: File[];
+  handleCancel: () => void;
+  newHandleProcesar: () => Promise<void>;
+}) => {
+  return (
+    <>
+      <FileUpload
+        key={files[0]?.name}
+        maxFiles={maxFiles}
+        maxSize={maxSize}
+        accept={accept}
+        onFilesChange={onFilesChange}
+        filesRefresh={filesRefresh}
+      />
+      <DialogFooter className="flex flex-col sm:flex-row gap-2">
+        <Button variant="outline" onClick={() => handleCancel()}>
+          Cancelar
+        </Button>
+        <HoverCard>
+          <HoverCardTrigger asChild>
+            <Button
+              disabled={files.length === 0 || files.length > maxFiles}
+              onClick={newHandleProcesar}
+            >
+              Procesar
+            </Button>
+          </HoverCardTrigger>
+          <HoverCardContent className=" p-2">
+            <p className="text-sm text-zinc-500">
+              No se ha seleccionado ningun archivo
+            </p>
+          </HoverCardContent>
+        </HoverCard>
+      </DialogFooter>
+    </>
+  );
+};
+
+const StepTwo = ({ postulantesExtraidos, inscribirPostulantes, onBack }: {
+  postulantesExtraidos: newPostulante[];
+  inscribirPostulantes: (postulantes: newPostulante[]) => Promise<void>;
+  onBack: () => void;
+}) => {
+  return (
+    <>
+      {postulantesExtraidos.length > 0 && (
+        <div className="max-h-4/6 h-4/6">
+          <div className="mb-4">
+            <p className="text-sm text-muted-foreground mb-2">
+              Se encontraron {postulantesExtraidos.length} postulantes.
+            </p>
+          </div>
+          {/* Después: envolvemos la tabla en un div que controla el scroll */}
+          <div className="overflow-auto border max-h-[60vh]">
+            <Table className="">
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Nombres</TableHead>
+                  <TableHead>Apellidos</TableHead>
+                  <TableHead>CI</TableHead>
+                  <TableHead>Area</TableHead>
+                  <TableHead>Categoria</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {postulantesExtraidos.map((inscripcion) =>
+                  inscripcion.nombresAreas.map((area, index) => (
+                    <TableRow key={inscripcion.ci + index}>
+                      <TableCell>{inscripcion.nombres}</TableCell>
+                      <TableCell>{inscripcion.apellidos}</TableCell>
+                      <TableCell>{inscripcion.ci}</TableCell>
+                      <TableCell>{area}</TableCell>
+                      <TableCell>{inscripcion.nombresCategorias[index]}</TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </div>
+
+          <DialogFooter className="flex flex-col sm:flex-row gap-2 mt-4">
+            <Button variant="outline" onClick={onBack}>
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Regresar
+            </Button>
+            <HoverCard>
+              <HoverCardTrigger asChild>
+                <Button
+                  onClick={() => inscribirPostulantes(postulantesExtraidos)}
+                >
+                  Inscribir Postulantes
+                </Button>
+              </HoverCardTrigger>
+              <HoverCardContent className=" p-2">
+                <p className="text-sm text-zinc-500">
+                  No se ha seleccionado ningun archivo
+                </p>
+              </HoverCardContent>
+            </HoverCard>
+          </DialogFooter>
+        </div>
+      )}
+    </>
+  );
+};
 
 interface FileUploadModalProps {
   maxFiles?: number;
@@ -59,10 +210,11 @@ export const IncribirExcel = ({
   title = "Añadir archivo excel",
   description = "Selecciona un archivo de Excel de tu dispositivo o arrástralo y suéltalo aquí.",
   olimpiada,
-  onSubmit = () => {},
+  onSubmit = () => { },
 }: FileUploadModalProps) => {
   const [files, setFiles] = useState<File[]>([]);
   const [open, setOpen] = useState(false);
+  const [currentStep, setCurrentStep] = useState(1);
 
   const { ci, codigo, codigo_lista } = useParams();
   const [loading, setLoading] = useState(false);
@@ -80,7 +232,31 @@ export const IncribirExcel = ({
     useUbicacion();
   const { getAreasCategoriasPorOlimpiada } = useCategorias();
 
+  const [postulantesExtraidos, setPostulantesExtraidos] = useState<
+    newPostulante[]
+  >([]);
+
   const navigate = useNavigate();
+
+  // Función para reiniciar todo el estado
+  const resetState = () => {
+    setFiles([]);
+    setCurrentStep(1);
+    setErrores([]);
+    setErroresDeFormatoExcel([]);
+    setPostulantesExtraidos([]);
+    setAreasCategorias(new Map());
+  };
+
+  // Función para ir al paso anterior
+  const goToPreviousStep = () => {
+    if (currentStep > 1) {
+      setCurrentStep(currentStep - 1);
+      if (currentStep === 2) {
+        setPostulantesExtraidos([]);
+      }
+    }
+  };
 
   useEffect(() => {
     if (!loading && open) {
@@ -204,7 +380,8 @@ export const IncribirExcel = ({
       setErrores(todosErrores);
       setLoading(false);
       if (todosErrores.length > 0) return;
-      inscribirPostulantes(postulantesConvertidos);
+      setPostulantesExtraidos(postulantesConvertidos);
+      setCurrentStep(2); // Avanzar al paso 2
     } catch (error: unknown) {
       if (error instanceof Error) {
         toast.error("Error al procesar el archivo, " + error.message);
@@ -241,7 +418,7 @@ export const IncribirExcel = ({
       toast.success("Postulantes registrados exitosamente");
       onSubmit();
       setOpen(false);
-      setFiles([]);
+      resetState();
       if (codigo || codigo_lista) {
         navigate(`./${codigo || codigo_lista}`);
       }
@@ -274,14 +451,18 @@ export const IncribirExcel = ({
   };
 
   const handleCancel = () => {
-    setFiles([]);
-    setErrores([]);
+    resetState();
     setOpen(false);
   };
 
   return (
     <>
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog open={open} onOpenChange={(isOpen) => {
+        setOpen(isOpen);
+        if (!isOpen) {
+          resetState();
+        }
+      }} >
         <DialogTrigger asChild>
           <Button
             className={`h-auto p-10 text-white flex bg-emerald-600 hover:bg-emerald-700 flex-col items-center gap-2 transition-all duration-300 shadow-md hover:shadow-lg`}
@@ -292,24 +473,12 @@ export const IncribirExcel = ({
             </p>
           </Button>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-[500px] md:max-w-[600px]">
+        <DialogContent className="max-h-[94vh] sm:max-w-[500px] md:max-w-[600px]">
           <DialogHeader>
             <DialogTitle className="text-xl font-semibold mb-2">
               {title}
             </DialogTitle>
-            <DialogDescription className="space-y-4">
-              <p className="text-muted-foreground">{description}</p>
-              <div className="bg-muted/30 p-4 rounded-lg">
-                <p className="font-medium text-sm mb-3">
-                  Para empezar, descarga la plantilla oficial:
-                </p>
-                <div className="flex items-center justify-center">
-                  <Suspense fallback={<div>Cargando plantilla...</div>}>
-                    <DescargarPlantilla olimpiada={olimpiada} />
-                  </Suspense>
-                </div>
-              </div>
-            </DialogDescription>
+            <StepIndicator currentStep={currentStep} steps={["Subir Archivo", "Revisar Datos"]} />
           </DialogHeader>
           <div className="">
             {cargandoCategorias && (
@@ -318,35 +487,40 @@ export const IncribirExcel = ({
 
             {!cargandoCategorias && (
               <>
-                <FileUpload
-                  key={files[0]?.name}
-                  maxFiles={maxFiles}
-                  maxSize={maxSize}
-                  accept={accept}
-                  onFilesChange={handleFilesChange}
-                  filesRefresh={files}
-                />
-
-                <DialogFooter className="flex flex-col sm:flex-row gap-2">
-                  <Button variant="outline" onClick={() => handleCancel()}>
-                    Cancelar
-                  </Button>
-                  <HoverCard>
-                    <HoverCardTrigger asChild>
-                      <Button
-                        disabled={files.length === 0 || files.length > maxFiles}
-                        onClick={newHandleProcesar}
-                      >
-                        Inscribir Postulantes
-                      </Button>
-                    </HoverCardTrigger>
-                    <HoverCardContent className=" p-2">
-                      <p className="text-sm text-zinc-500">
-                        No se ha seleccionado ningun archivo
-                      </p>
-                    </HoverCardContent>
-                  </HoverCard>
-                </DialogFooter>
+                {currentStep === 1 && (
+                  <>
+                    <DialogDescription className="space-y-4">
+                      <p className="text-muted-foreground">{description}</p>
+                      <div className="bg-muted/30 p-4 rounded-lg">
+                        <p className="font-medium text-sm mb-3">
+                          Para empezar, descarga la plantilla oficial:
+                        </p>
+                        <div className="flex items-center justify-center">
+                          <Suspense fallback={<div>Cargando plantilla...</div>}>
+                            <DescargarPlantilla olimpiada={olimpiada} />
+                          </Suspense>
+                        </div>
+                      </div>
+                    </DialogDescription>
+                    <StepOne
+                      files={files}
+                      maxFiles={maxFiles}
+                      maxSize={maxSize}
+                      accept={accept}
+                      onFilesChange={handleFilesChange}
+                      filesRefresh={files}
+                      handleCancel={handleCancel}
+                      newHandleProcesar={newHandleProcesar}
+                    />
+                  </>
+                )}
+                {currentStep === 2 && (
+                  <StepTwo
+                    postulantesExtraidos={postulantesExtraidos}
+                    inscribirPostulantes={inscribirPostulantes}
+                    onBack={goToPreviousStep}
+                  />
+                )}
               </>
             )}
           </div>

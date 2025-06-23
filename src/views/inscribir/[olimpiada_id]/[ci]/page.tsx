@@ -10,7 +10,7 @@ import OlimpiadaNoEnCurso from "@/components/OlimpiadaNoEnCurso";
 import { lazy, Suspense } from 'react';
 import Header from "@/components/Header";
 
-const InscribirExcel = lazy(() => import("@/components/InscribirExcel"));
+const InscribirExcel = lazy(() => import("@/views/inscribir/[olimpiada_id]/[ci]/viaExcel/InscribirExcel"));
 import Pasos from "./pasos";
 import { usePageViewModel } from "@/viewModels/usarVistaModelo/inscribir/olimpiada/usarPageViewModel";
 

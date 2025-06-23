@@ -475,6 +475,8 @@ export const newValidarFila = (
     idColegio: 0,
     idCurso: 0,
     inscripciones: [],
+    nombresAreas: [],
+    nombresCategorias: [],
   };
 
   ["telefono_pertenece_a", "correo_pertenece_a"].forEach((campo) => {
@@ -584,6 +586,8 @@ export const newValidarFila = (
             idArea: encontrado?.areaId || "",
             idCategoria: encontrado?.id || "",
           });
+          postulante.nombresAreas.push(encontrado?.areaNombre || "");
+          postulante.nombresCategorias.push(encontrado?.nombre || "");
         } else {
           errores.push({
             campo: "Área-Categoría " + (i + 1),

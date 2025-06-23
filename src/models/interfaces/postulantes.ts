@@ -68,6 +68,8 @@ export interface newPostulante {
     idColegio: number;
     idCurso: number;
     inscripciones: { idArea: string | number; idCategoria: string | number }[];
+    nombresAreas: string[];
+    nombresCategorias: string[];
 }
 
 export const CONTACTOS: { id: string; nombre: string }[] = [
