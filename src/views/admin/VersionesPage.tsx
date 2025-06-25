@@ -9,14 +9,13 @@ import { useVersionesPageViewModel, type VersionesPageProps } from "@/viewModels
 
 export default function VersionesPage({
     title,
+    textoNoHayVersiones = "No hay versiones en fase de Preparación o no hay versiones disponibles aún.",
     returnTo = "/admin",
-    queVersiones = [],
     filter,
     textoBoton,
 }: VersionesPageProps) {
     const { versiones, loading } = useVersionesPageViewModel({
         title,
-        queVersiones,
         filter,
     });
 
@@ -41,8 +40,7 @@ export default function VersionesPage({
                         :
                         (
                             <p className="text-center text-gray-500">
-                                No hay versiones en fase de Preparación o no hay
-                                versiones disponibles aún .
+                                {textoNoHayVersiones}
                             </p>
                         )
                     }

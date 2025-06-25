@@ -7,8 +7,6 @@ export interface Version {
     estado: "Activo" | "Inactivo" | string;
 }
 
-export type VersionFilter = "pasadas" | "futuras" | string;
-
 export interface Olimpiada {
     id: number;
     nombre: string;

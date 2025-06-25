@@ -1,18 +1,17 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { API_URL } from "@/viewModels/hooks/useApiRequest";
-import { VersionFilter, Olimpiada } from "@/models/interfaces/versiones";
+import { Olimpiada } from "@/models/interfaces/versiones";
 
 export interface VersionesPageProps {
   title: string;
   returnTo?: string;
-  queVersiones?: VersionFilter[];
+  textoNoHayVersiones?: string;
   filter?: (value: Olimpiada, index: number, array: Olimpiada[]) => unknown;
   textoBoton?: string;
 }
 
 export function useVersionesPageViewModel({
-  queVersiones = [],
   filter,
 }: VersionesPageProps) {
   const [versiones, setVersiones] = useState<Olimpiada[]>([]);
@@ -21,7 +20,7 @@ export function useVersionesPageViewModel({
   const fetchData = async () => {
     setLoading(true);
     try {
-      if (queVersiones.length === 0) {
+      
         const { data } = await axios.get<Olimpiada[]>(
           `${API_URL}/api/olimpiadas/conFases`
         );
@@ -31,14 +30,7 @@ export function useVersionesPageViewModel({
         } else {
           setVersiones(data);
         }
-      } else {
-        const { data: todasLasVersiones } = await axios.post<Olimpiada[]>(
-          `${API_URL}/api/olimpiadas/por-tipos`,
-          { tipos: queVersiones }
-        );
-        console.log(todasLasVersiones);
-        setVersiones(todasLasVersiones);
-      }
+      
     } catch (error) {
       console.error("Error fetching versiones:", error);
     } finally {

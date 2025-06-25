@@ -35,7 +35,7 @@ const StepTwo = ({ postulantesExtraidos, inscribirPostulantes, onBack }: StepTwo
             </p>
           </div>
           {/* Después: envolvemos la tabla en un div que controla el scroll */}
-          <div className="overflow-auto border max-h-[60vh] max-w-[80vw]">
+          <div className="overflow-auto max-w-[80vw] sm:max-w-[74vw] md:max-w-[95vw]">
             <Table className="">
               <TableHeader>
                 <TableRow>

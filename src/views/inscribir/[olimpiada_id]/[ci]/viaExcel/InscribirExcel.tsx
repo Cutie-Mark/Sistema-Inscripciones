@@ -322,9 +322,10 @@ export const IncribirExcel = ({
             </p>
           </Button>
         </DialogTrigger>
-        <DialogContent className={`max-h-[94vh] ${currentStep==1?"sm:max-w-[500px] md:max-w-[600px]":"sm:max-w-[95px] md:max-w-[1200px]"}`}>
+        <DialogContent className={`max-h-[94vh] 
+          ${currentStep==1?"sm:max-w-[500px] md:max-w-[600px]":"sm:max-w-[600px] md:max-w-[1200px]"}`}>
           <DialogHeader>
-            <DialogTitle className="text-xl font-semibold mb-2">
+            <DialogTitle className="text-xl font-semibold">
               {title}
             </DialogTitle>
             <StepIndicator currentStep={currentStep-1} steps={["Subir Archivo", "Revisar Datos"]} />
@@ -338,10 +339,10 @@ export const IncribirExcel = ({
               <>
                 {currentStep === 1 && (
                   <>
-                    <DialogDescription className="space-y-4">
+                    <DialogDescription className="">
                       <p className="text-muted-foreground">{description}</p>
                       <div className="bg-muted/30 p-4 rounded-lg">
-                        <p className="font-medium text-sm mb-3">
+                        <p className="font-medium text-sm">
                           Para empezar, descarga la plantilla oficial:
                         </p>
                         <div className="flex items-center justify-center">
