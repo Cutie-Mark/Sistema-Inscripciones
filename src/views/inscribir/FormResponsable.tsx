@@ -8,7 +8,7 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
+import { cn } from "@/viewModels/utils/utils";
 import NotFoundPage from "../404";
 import { MailIcon, PhoneIcon, UserIcon } from "lucide-react";
 import { useFormResponsableViewModel } from "@/viewModels/usarVistaModelo/inscribir/useFormResponsableViewModel";

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { AlertTriangle, CheckCircle, X } from "lucide-react";
 import { AlertDescription } from "@/components/ui/alert";
-import { cn } from "@/lib/utils";
+import { cn } from "@/viewModels/utils/utils";
 
 interface Props {
     title?: string;

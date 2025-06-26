@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { es } from "date-fns/locale";
 import { CalendarIcon } from "lucide-react";
 import { Calendar } from "./ui/calendar";
-import { cn } from "@/lib/utils";
+import { cn } from "@/viewModels/utils/utils";
 
 interface DatePickerPopoverProps {
     selectedDate: Date | null;

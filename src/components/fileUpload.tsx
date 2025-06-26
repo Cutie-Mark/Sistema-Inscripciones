@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Upload, X, FileText, ImageIcon, FileIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { cn } from "@/viewModels/utils/utils";
 import { API_URL } from '@/viewModels/hooks/useApiRequest';
 
 

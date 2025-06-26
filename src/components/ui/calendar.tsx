@@ -2,7 +2,7 @@ import * as React from 'react';
 import { DayFlag, DayPicker, DropdownProps, SelectionState, UI } from 'react-day-picker';
 
 import { buttonVariants } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
+import { cn } from '@/viewModels/utils/utils';
 import { Select } from '@radix-ui/react-select';
 import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, ChevronUpIcon } from 'lucide-react';
 import { ScrollArea } from './scrollArea';

@@ -1,68 +1,75 @@
 import React from 'react';
 import {
-  createBrowserRouter,
-  RouterProvider,
-  RouteObject,
+  createBrowserRouter,      // mantiene el nombre original de la función
+  RouterProvider,           // idem
+  RouteObject               // tipo de React-Router
 } from 'react-router-dom';
+
 import PrivateRoute from './components/PrivateRoute';
 
-const pages = import.meta.glob('./views/**/*.tsx');
+// 1. Carga lazy de todas las páginas (*.tsx) dentro de /views
+const paginas = import.meta.glob('./views/**/*.tsx');
 
-const protectedPrefixes = ['/admin', '/usuario', '/subir'];
+// 2. Prefijos cuyas rutas deben estar protegidas
+const prefijosProtegidos = ['/admin', '/usuario', '/subir'];
 
-interface PageModule {
+// 3. Tipo auxiliar para los módulos de página
+interface ModuloPagina {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   default: React.ComponentType<any>;
 }
 
-const publicRoutes: RouteObject[] = [];
-const protectedRoutes: RouteObject[] = [];
+// 4. Listas de rutas públicas y protegidas
+const rutasPublicas: RouteObject[] = [];
+const rutasProtegidas: RouteObject[] = [];
 
-Object.entries(pages).forEach(([filePath, importer]) => {
-  // 1. Genera el path
-  const routePath = filePath
-    .replace('./views', '')
-    .replace(/\.tsx$/, '')
-    .replace(/\/(page|index)$/, '')
-    .replace(/\/(pagina|index)$/, '')
-    .replace(/\[(\w+)\]/g, ':$1') || '/';
+// 5. Recorre cada archivo y construye su definición de ruta
+Object.entries(paginas).forEach(([rutaArchivo, importador]) => {
+  // --> Genera la URL a partir de la ruta del archivo
+  const ruta = rutaArchivo
+    .replace('./views', '')            // quita la base
+    .replace(/\.tsx$/, '')             // quita extensión
+    .replace(/\/(pagina|index)$/, '')  // quita “pagina” o “index”
+    .replace(/\[(\w+)\]/g, ':$1')      // convierte [id] -> :id
+    || '/';
 
-  // 2. Crea la ruta con lazy loader
-  const routeDef: RouteObject = {
-    path: routePath,
+  // --> Crea el objeto de ruta con carga perezosa
+  const definicionRuta: RouteObject = {
+    path: ruta,
     lazy: async () => {
-      const module = await (importer() as Promise<PageModule>);
-      return { Component: module.default };
+      const modulo = await (importador() as Promise<ModuloPagina>);
+      return { Component: modulo.default };
     }
   };
 
-  // 3. Clasifica pública vs protegida
-  if (protectedPrefixes.some(pref => routePath.startsWith(pref))) {
-    protectedRoutes.push(routeDef);
+  // --> Clasifica la ruta como protegida o pública
+  if (prefijosProtegidos.some(pref => ruta.startsWith(pref))) {
+    rutasProtegidas.push(definicionRuta);
   } else {
-    publicRoutes.push(routeDef);
+    rutasPublicas.push(definicionRuta);
   }
 });
 
-// 4. Monta el router con createBrowserRouter
-const router = createBrowserRouter(
+// 6. Construye el enrutador de la aplicación
+const enrutador = createBrowserRouter(
   [
-    ...publicRoutes,
+    ...rutasPublicas,
     {
       element: <PrivateRoute />,
-      children: protectedRoutes
+      children: rutasProtegidas
     },
-
-    pages['./views/404.tsx'] && {
+    // Ruta 404 genérica (si existe)
+    paginas['./views/404.tsx'] && {
       path: '*',
       lazy: async () => {
-        const module = await (import('./views/404.tsx') as Promise<PageModule>);
-        return { Component: module.default };
+        const modulo = await (import('./views/404.tsx') as Promise<ModuloPagina>);
+        return { Component: modulo.default };
       }
     }
-  ].filter(Boolean) as RouteObject[],
+  ].filter(Boolean) as RouteObject[]
 );
 
-export default function AppRouter() {
-  return <RouterProvider router={router} />;
+// 7. Componente contenedor del enrutador
+export default function EnrutadorApp() {
+  return <RouterProvider router={enrutador} />;
 }

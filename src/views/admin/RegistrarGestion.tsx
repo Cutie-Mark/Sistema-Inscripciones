@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/popover";
 import { CalendarIcon, PlusCircle } from "lucide-react";
 import { format } from "date-fns";
-import { cn } from "@/lib/utils";
+import { cn } from "@/viewModels/utils/utils";
 import { es } from "date-fns/locale";
 import { Textarea } from "@/components/ui/textarea";
 import { useRegistrarGestionViewModel } from "@/viewModels/usarVistaModelo/privilegios/useRegistrarGestionViewModel";

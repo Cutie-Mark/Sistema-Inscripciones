@@ -26,7 +26,7 @@ import { toast } from "sonner";
 import LoadingAlert from "@/components/loading-alert";
 import { useParams } from "react-router-dom";
 import { Olimpiada } from "@/models/interfaces/versiones";
-import { ExcelParser } from "@/lib/ExcelParser";
+import { ExcelParser } from "@/viewModels/lib/ExcelParser";
 import { useNavigate } from "react-router-dom";
 import { useUbicacion } from "@/viewModels/context/UbicacionContext";
 import { useCategorias } from "@/viewModels/context/CategoriasContext";

@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils"; // Función para manejar clases condicionales
+import { cn } from "@/viewModels/utils/utils"; // Función para manejar clases condicionales
 import { Check, ChevronsUpDown } from "lucide-react"; // Íconos de lucide-react
 import { Button } from "@/components/ui/button";
 import {

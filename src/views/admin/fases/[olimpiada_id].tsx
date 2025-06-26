@@ -36,7 +36,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import NotFoundPage from "@/views/404";
-import { cn } from "@/lib/utils";
+import { cn } from "@/viewModels/utils/utils";
 import { useFasesOlimpiada } from "@/viewModels/usarVistaModelo/privilegios/fases/useFasesOlimpiada";
 
 export default function Page() {
