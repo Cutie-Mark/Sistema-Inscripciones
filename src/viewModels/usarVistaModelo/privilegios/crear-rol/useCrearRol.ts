@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { toast } from "sonner";
-import { request } from "@/models/api/solicitudes";
-
+import { crearRol } from "@/models/api/rol";
 export function useCrearRol() {
   const [open, setOpen] = useState(false);
   const [roleName, setRoleName] = useState("");
@@ -23,11 +22,8 @@ export function useCrearRol() {
       return;
     }
     try {
-      await request("/api/roles", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nombre: roleName }),
-      });
+      await crearRol(roleName);
+      setRoleName("");
       toast.success("Rol creado exitosamente");
       setOpen(false);
       setRoleName("");
