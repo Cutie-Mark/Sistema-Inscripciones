@@ -2,7 +2,7 @@
 
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
-import { CreateUserForm } from "./create-user-form";
+import { CreateUserForm } from "./crearUsuarioForm";
 import { UserPlus } from "lucide-react";
 import ReturnComponent from "@/components/ReturnComponent";
 

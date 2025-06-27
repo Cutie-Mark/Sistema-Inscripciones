@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useCrearRol } from "@/viewModels/usarVistaModelo/privilegios/crear-rol/useCrearRol";
+import { useCrearRol } from "@/viewModels/usarVistaModelo/privilegios/crearRol/useCrearRol";
 
 export default function CrearRol() {
   const {
